@@ -1,0 +1,12 @@
+ex1.m	%% show spectra of different filters convoling with a delta. Impulse response = hf * delta uses conv2
+ex2.m   %% Same as 1 but uses filter
+
+spect.m %% show spectra of rectangle using FFT2
+myalias.m %% shows alias  
+
+viasampling.m %%down sample an image (lowpass filter ON/OFF) then upsample to original size  
+
+Uses Auxiliary functions
+
+upsampling.m
+downsampling.m
