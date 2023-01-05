@@ -1,0 +1,7 @@
+kaggle
+numpy
+scipy
+matplotlib
+opencv-python
+pandas
+ipykernel
