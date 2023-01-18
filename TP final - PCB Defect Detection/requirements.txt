@@ -5,3 +5,4 @@ matplotlib
 opencv-python
 pandas
 ipykernel
+scikit-image
