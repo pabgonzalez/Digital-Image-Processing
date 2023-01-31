@@ -3,11 +3,11 @@ import cv2
 
 KeyPoint = namedtuple('KeyPoint', ['xmin', 'xmax', 'ymin', 'ymax'])
 
-class Score:
-    false_negative = set()
-    true_positive = set()
-    false_positive = set()
+class Score():
     def __init__(self, df):
+        self.false_negative = set()
+        self.true_positive = set()
+        self.false_positive = set()
         for i in range(len(df)):
             self.false_negative.add(KeyPoint(
                 xmin=df.iloc[i].xmin,
@@ -18,7 +18,7 @@ class Score:
 
     def isWithinLimits(self, x, y):
         for kp in self.false_negative.copy():
-            if kp.xmin <= x and x <= kp.xmax:
+            if kp.xmin <= x and x <= kp.xmax and kp.ymin <= y and y <= kp.ymax:
                 self.true_positive.add(kp)
                 self.false_negative.remove(kp)
                 return
@@ -26,7 +26,7 @@ class Score:
     
     def checkKeyPoints(self, keypoints: list[cv2.KeyPoint]):
         for kp in keypoints:
-            self.isWithinLimits(*kp.pt)
+            self.isWithinLimits(kp.pt[0], kp.pt[1])
 
     def getFScore(self, beta=1):
         tp = len(self.true_positive)
