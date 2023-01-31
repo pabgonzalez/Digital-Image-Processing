@@ -3,10 +3,10 @@ import numpy as np
 from scipy.signal import find_peaks
 from .pcb_dip_tools import img_histogram, get_pcb_silk_and_pads, gray_smooth_pcb
 
-def get_open_circuit_keypoints_from_smooth(img_pcb, ignore_border=120):
+def get_open_circuit_keypoints_from_smooth(img_pcb, ignore_border=120, debug_mode=False):
     peaks,_ = find_peaks(img_histogram(img_pcb), distance = 25, prominence = 0.01)
 
-    pcb_binary = cv2.threshold(img_pcb, (peaks[0]+peaks[1])/2, 255, cv2.THRESH_BINARY)[1]
+    pcb_binary = cv2.threshold(img_pcb, (peaks[0]+peaks[-1])/2, 255, cv2.THRESH_BINARY)[1]
 
     kernel = np.ones((3, 3), dtype=np.uint8)
     img_eroded  = cv2.erode(pcb_binary, kernel)
@@ -21,9 +21,6 @@ def get_open_circuit_keypoints_from_smooth(img_pcb, ignore_border=120):
     inner_mask = np.zeros_like(img3)
     inner_mask[ignore_border:inner_mask.shape[0]-ignore_border,ignore_border:inner_mask.shape[1]-ignore_border] = True
     img3 = img3 * inner_mask
-
-    # if debug_mode:
-    #     display_np_row([pcb_binary, img_eroded, img2, img3], 0.25)
 
     # Set up the detector with parameters.
     params = cv2.SimpleBlobDetector_Params()
@@ -43,6 +40,8 @@ def get_open_circuit_keypoints_from_smooth(img_pcb, ignore_border=120):
     # Detect blobs.
     keypoints = detector.detect(cv2.bitwise_not(img3))
 
+    if debug_mode:
+        return keypoints, [pcb_binary, img_eroded, img2, img3]
     return keypoints
 
 
